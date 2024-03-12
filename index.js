@@ -67,3 +67,16 @@ app.post('/add-expense', async function(request, response) {
         })
     }
 })
+
+app.get('/get-expenses', async function(request, response) {
+    try {
+        const expenseDetails = await Expense.find()
+        response.status(200).json(expenseDetails)
+    } catch(error) {
+        response.status(500).json({
+            "status" : "failure",
+            "message" : "could not fetch data",
+            "error" : error
+        })
+    }
+})
