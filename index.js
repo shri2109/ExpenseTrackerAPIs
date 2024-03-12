@@ -105,3 +105,31 @@ app.delete('/delete-expense/:id', async function(request, response) {
         })
     }
 })
+
+app.patch('/update-expense/:id', async function(request, response) {
+    try {
+        const expenseEntry = await Expense.findById(request.params.id)
+        if(expenseEntry) {
+            await expenseEntry.updateOne({
+                "amount" : request.body.amount,
+                "category" : request.body.category,
+                "date" : request.body.date
+            })
+            response.status(200).json({
+                "status" : "success",
+                "message" : "entry updated"
+            })
+        } else {
+            response.status(404).json({
+                "status" : "failure",
+                "message" : "entry not found"
+            })
+        }
+    } catch(error) {
+        response.status(500).json({
+            "status" : "failure",
+            "message" : "could not update entry",
+            "error" : error
+        })
+    }
+})
