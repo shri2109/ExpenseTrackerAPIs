@@ -12,10 +12,10 @@ const { Expense } = require('./schema.js')
  * get
  * 
  * delete an expense -> /delete-expense
- * post : id of the entry
+ * delete : id of the entry
  * 
  * updating an existing an one -> update-expense
- * post : id of the entry, expenses details
+ * patch : id of the entry, expenses details
 */
 
 /**
@@ -76,6 +76,31 @@ app.get('/get-expenses', async function(request, response) {
         response.status(500).json({
             "status" : "failure",
             "message" : "could not fetch data",
+            "error" : error
+        })
+    }
+})
+
+// localhost:8000/delete-expense/65efdf58a22a20e156658094
+app.delete('/delete-expense/:id', async function(request, response) {
+    try {
+        const expenseEntry = await Expense.findById(request.params.id)
+        if(expenseEntry) {
+            await Expense.findByIdAndDelete(request.params.id)
+            response.status(200).json({
+                "status" : "success",
+                "message" : "entry deleted"
+            })
+        } else {
+            response.status(404).json({
+                "status" : "failure",
+                "message" : "entry not found"
+            })
+        }
+    } catch(error) {
+        response.status(500).json({
+            "status" : "failure",
+            "message" : "could not delete entry",
             "error" : error
         })
     }
