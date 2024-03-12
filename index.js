@@ -1,4 +1,5 @@
 const bodyParser = require('body-parser')
+const cors = require('cors')
 const express = require('express')
 const mongoose = require('mongoose')
 const { Expense } = require('./schema.js')
@@ -33,13 +34,15 @@ const { Expense } = require('./schema.js')
 
 const app = express()
 app.use(bodyParser.json())
+app.use(cors())
 
 async function connectToDb() {
     try {
         await mongoose.connect('mongodb+srv://shri:1234@cluster0.ojhi76l.mongodb.net/ExpenseTracker?retryWrites=true&w=majority&appName=Cluster0')
         console.log('DB connection established ;)')
-        app.listen(8000, function() {
-            console.log('Listening on port 8000...')
+        const port = process.env.PORT || 8000
+        app.listen(port, function() {
+            console.log(`Listening on port ${port}...`)
         })
     } catch(error) {
         console.log(error)
